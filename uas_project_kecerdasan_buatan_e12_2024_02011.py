@@ -188,21 +188,3 @@ Original file is located at
 #     2. **Investigasi Root-Cause:** Lakukan evaluasi khusus pada lini permesinan yang secara historis paling sering menghasilkan produk pada *Klaster Bahaya*.
 #     3. **Optimalisasi Quality Control (QC):** Perketat metode inspeksi pada komponen yang menunjukkan gejala cacat moderat sebelum berevolusi menjadi cacat kritis.
 #     """)
-
-!pip install -q streamlit pyngrok
-
-import subprocess
-from pyngrok import ngrok
-import time
-
-ngrok.kill()
-
-!ngrok config add-authtoken 3Gd4nfi5XX8hHLAAb5s05YXPjke_2V7Ks2giz12HNyNGTgEVH
-
-subprocess.Popen(["streamlit", "run", "app.py"])
-
-time.sleep(3)
-
-
-public_url = ngrok.connect(8501).public_url
-print(f" URL : {public_url}")
