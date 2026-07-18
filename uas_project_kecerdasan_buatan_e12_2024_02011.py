@@ -29,7 +29,7 @@ def load_data():
 
 df = load_data()
 
-Tab
+#Tab
 tab_profil, tab_data, tab_kmeans, tab_hc, tab_keputusan = st.tabs([
     "Identitas Proyek",
     "Eksplorasi Data",
