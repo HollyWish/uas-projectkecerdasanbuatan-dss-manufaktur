@@ -18,7 +18,7 @@ st.title(" Sistem Cerdas Pengendalian Kualitas (Quality Control)")
 st.markdown("Pendekatan *Unsupervised Machine Learning* untuk Segmentasi Cacat Produk Manufaktur")
 st.markdown("---")
 
-Data Set
+#Data Set
 @st.cache_data
 def load_data():
     df = pd.read_csv("defects_data.csv")
