@@ -89,13 +89,13 @@ with tab_data:
 with tab_kmeans:
     st.header("Algoritma K-Means & Simulasi Prediksi")
 
-    Preprocessing
+    # Preprocessing
     df_kmeans = df.dropna(subset=["repair_cost"]).copy()
     X_km = df_kmeans[["repair_cost", "severity_score"]]
     scaler_km = StandardScaler()
     X_scaled_km = scaler_km.fit_transform(X_km)
 
-    Modeling
+    # Modeling
     model_km = KMeans(n_clusters=3, random_state=42, n_init=10)
     df_kmeans["Cluster"] = model_km.fit_predict(X_scaled_km)
 
@@ -134,13 +134,13 @@ with tab_kmeans:
 with tab_hc:
     st.header("Algoritma Hierarchical (Agglomerative) Clustering")
 
-    Preprocessing
+    # Preprocessing
     df_hc = df.dropna(subset=["repair_cost"]).copy()
     X_hc = df_hc[["repair_cost", "severity_score"]]
     scaler_hc = StandardScaler()
     X_scaled_hc = scaler_hc.fit_transform(X_hc)
 
-    Modeling
+    # Modeling
     model_hc = AgglomerativeClustering(n_clusters=3, metric='euclidean', linkage='ward')
     df_hc["Cluster_Hierarki"] = model_hc.fit_predict(X_scaled_hc)
 
