@@ -99,6 +99,18 @@ with tab_kmeans:
     model_km = KMeans(n_clusters=3, random_state=42, n_init=10)
     df_kmeans["Cluster"] = model_km.fit_predict(X_scaled_km)
 
+    # Nomor klaster bersifat arbitrer; beri prioritas berdasarkan profil klaster,
+    # bukan berdasarkan nomor yang dihasilkan K-Means.
+    cluster_profile = pd.DataFrame(
+        scaler_km.inverse_transform(model_km.cluster_centers_),
+        columns=["repair_cost", "severity_score"]
+    )
+    cluster_priority = (
+        cluster_profile
+        .sort_values(["severity_score", "repair_cost"], ascending=False)
+        .assign(priority=lambda x: range(1, len(x) + 1))["priority"]
+    )
+
     col_k1, col_k2 = st.columns([2, 1])
     with col_k1:
         fig_km, ax_km = plt.subplots(figsize=(8, 5))
@@ -125,10 +137,24 @@ with tab_kmeans:
             new_data = scaler_km.transform([[in_cost, mapping[in_sev]]])
             hasil = model_km.predict(new_data)[0]
 
-            if in_sev == "Critical":
-                st.error(f"⚠️ **TERDETEKSI ANOMALI KRITIS (Masuk Klaster {hasil}). Hentikan lini produksi untuk inspeksi!**")
+            priority = cluster_priority.loc[hasil]
+            profile = cluster_profile.loc[hasil]
+
+            st.write(
+                f"Masuk Klaster {hasil} — prioritas risiko {priority}/3 "
+                f"(rata-rata biaya: ${profile['repair_cost']:.2f}; "
+                f"rata-rata keparahan: ${profile['severity_score']:.1f}/3)."
+            )
+            if priority == 1:
+                st.warning(
+                    "⚠️ **Prioritas tinggi:** lakukan inspeksi fisik dan eskalasi ke QC. "
+                    "Prediksi klaster adalah dukungan keputusan; jangan menghentikan lini "
+                    "hanya berdasarkan hasil ini."
+                )
+            elif priority == 2:
+                st.info("ℹ️ **Prioritas menengah:** jadwalkan pemeriksaan dan verifikasi kondisi mesin.")
             else:
-                st.success(f"✅ **KONDISI AMAN (Masuk Klaster {hasil}). Proses produksi dapat dilanjutkan.**")
+                st.success("✅ **Prioritas rendah:** lanjutkan pemantauan rutin sesuai prosedur QC.")
 
 
 with tab_hc:
